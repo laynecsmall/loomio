@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
       flash[:error] = t("error.access_denied")
       redirect_to dashboard_path
     else
-      store_location
       authenticate_user!
     end
   end
@@ -50,9 +49,9 @@ class ApplicationController < ActionController::Base
       root_path
     end
   end
-
-  def store_location
-    session['user_return_to'] = request.original_url
+  
+  def store_previous_location
+    session['user_return_to'] ||= request.env.fetch('HTTP_REFERER', nil)
   end
 
   def clear_stored_location
